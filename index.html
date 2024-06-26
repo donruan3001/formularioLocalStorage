@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sistema de Cadastro CDS</title>
+
+    <!--o uso do defer é é fazer com que o navegador execute o script após o
+    carregamento completo do HTML-->
+  </head>
+  <body>
+    <style>
+    /* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+header {
+  text-align: center;
+  padding: 25px;
+  background-color: white;
+  color: #fff;
+}
+
+.logocds {
+  height: 170px;
+  width: 150px;
+}
+
+.titulo {
+  margin: 0;
+}
+
+.camposdigitacao {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"] {
+  width: calc(100% - 10px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.cadastro {
+  text-align: center;
+}
+
+.btCadastro {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btCadastro:hover {
+  background-color: #555;
+}
+
+.tabela {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background-color: #333;
+  color: #fff;
+}
+    </style>
+   
+  <body>
+    <header >
+      <img class="logocds" src="./logo.jpeg" />
+      <h1 class="titulo">Sistema de Cadastro de Visitantes ao CDS</h1>
+    </header>
+    <form id="cadastroForm">
+      <section class="camposdigitacao">
+        <div>
+          <label for="nome">Digite seu nome completo: </label>
+          <input type="text" id="nome" name="nomecompleto" />
+        </div>
+        <div>
+          <label for="idmilitar">Digite sua identidade militar: </label>
+          <input
+            type="text"
+            id="idmilitar"
+            name="identidademilitar"
+            maxlength="14"
+          />
+        </div>
+        <div>
+          <label for="om">OM de Origem: </label>
+          <input type="text" id="om" name="om" />
+        </div>
+        <div>
+          <label for="celular">Digite seu celular: </label>
+          <input type="text" id="celular" name="celular" maxlength="11" />
+        </div>
+
+        <div>
+        
+          <button type="submit" class="btCadastro">cadastrar visitante</button>
+          
+        </div>
+
+      </section>
+    </form>
+    <section class="tabela">
+      <table id="tabela">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Identidade Militar</th>
+            <th>OM de Origem</th>
+            <th>Celular</th>
+            <th>Horário de Entrada</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody class="tabela-corpo"></tbody>
+      </table>
+    </section>
+    <script>
+      const form = document.querySelector("#cadastroForm");
+      const tabelaCorpo = document.querySelector(".tabela-corpo");
+
+      
+      //função para adicionar pessoas as tabelas
+//função para adicionar pessoas as tabelas
+function adicionarPessoa(nome, idmilitar, om, celular, horario) {
+    const linha = tabelaCorpo.insertRow();
+    const valorNome = document.createElement("td");
+    const valorIdMilitar = document.createElement("td");
+    const valorOm = document.createElement("td");
+    const valorCelular = document.createElement("td");
+    const horarioEntrada = document.createElement('td');
+    const colunaAcoes = document.createElement('td'); // Coluna para os botões de exclusão
+    
+    valorNome.textContent = nome;
+    valorIdMilitar.textContent = idmilitar;
+    valorOm.textContent = om;
+    valorCelular.textContent = celular; // Correção: substituído ".textContent.in" por ".textContent"
+    horarioEntrada.textContent = horario;
+    
+    // Botão de exclusão
+    const botaoExcluir = document.createElement('button');
+    botaoExcluir.textContent = 'Excluir';
+    botaoExcluir.classList.add('btn-excluir');
+    botaoExcluir.addEventListener('click', () => {
+        tabelaCorpo.removeChild(linha); // Remove a linha da tabela quando o botão de exclusão é clicado
+    });
+    
+    colunaAcoes.appendChild(botaoExcluir); // Adiciona o botão de exclusão à coluna de ações
+
+    linha.appendChild(valorNome);
+    linha.appendChild(valorIdMilitar);
+    linha.appendChild(valorOm);
+    linha.appendChild(valorCelular);
+    linha.appendChild(horarioEntrada);
+    linha.appendChild(colunaAcoes); // Adiciona a coluna de ações (com o botão de exclusão) à linha
+}
+
+      // Função para validar se o valor contém apenas números inteiros
+        function validarInteiros(valor) {
+            return /^\d+$/.test(valor);
+        }
+      //evento para o formulario
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const nome = document.querySelector("#nome").value.toUpperCase().trim();
+        const idmilitar = document.querySelector("#idmilitar").value.trim();
+        const om = document.querySelector("#om").value.toUpperCase().trim();
+        const celular = document.querySelector("#celular").value.trim();
+        const horario = new Date().toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        //faz um alert caso algum dos campos estejam em branco 
+        if (nome === '' || idmilitar === '' || om === '' || celular === '') {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+          }else if(celular.length !==11){
+            alert('Por insira um número de celular com 11 dígitos')
+            return;
+          }else if(!validarInteiros(idmilitar) || !validarInteiros(celular)){
+            alert('Por favor insira um valor válido no campo de identidade')
+            return;
+          }else if(validarInteiros(nome)){
+            alert('Por favor insira um valor válido no campo de nome')
+            return;
+          }
+
+        adicionarPessoa(nome, idmilitar, om, celular,horario);
+        guardarPessoa(nome,idmilitar,om,celular,horario);
+        form.reset();
+      });
+ 
+      //guardar os dados na localStorage
+      function guardarPessoa(nome, idmilitar, om, celular, horario) {
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        const novaPessoa = {
+            nome: nome,
+            idmilitar: idmilitar,
+            om: om,
+            celular: celular,
+            horario: horario
+        };
+          pessoas.push(novaPessoa);
+          localStorage.setItem('pessoas', JSON.stringify(pessoas));
+    }
+
+      //todos os dados cadastrados vão ficar na tela ,após carregar a página
+      window.addEventListener('load',()=>{
+        puxarPessoa();
+      });
+
+      //função para puxar os elementos para a tabela
+      function puxarPessoa(){
+        const pessoas= JSON.parse(localStorage.getItem('pessoas'))||[]
+        pessoas.forEach(pessoa => {
+          const { nome, idmilitar, om, celular, horario } = pessoa;
+       adicionarPessoa(nome, idmilitar, om, celular, horario);
+        });   
+        
+      }
+ </script>
+  </body>
+</html>
