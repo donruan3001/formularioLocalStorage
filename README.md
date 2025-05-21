@@ -19,10 +19,3 @@ Este projeto é uma aplicação web simples que permite o **cadastro de visitant
 - JavaScript (puro)  
 - Armazenamento: `localStorage` do navegador  
 
-
-## 📦 Como Executar
-
-1. Clone este repositório:
-
-```bash
-git clone https://github.com/seuusuario/sistema-cadastro-visitantes.git
