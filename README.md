@@ -19,9 +19,6 @@ Este projeto é uma aplicação web simples que permite o **cadastro de visitant
 - JavaScript (puro)  
 - Armazenamento: `localStorage` do navegador  
 
-## 📸 Capturas de Tela
-
-> _Adicione aqui prints do sistema em funcionamento (opcional)._  
 
 ## 📦 Como Executar
 
