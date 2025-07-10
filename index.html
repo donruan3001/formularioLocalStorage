@@ -142,6 +142,7 @@ th {
             <th>OM de Origem</th>
             <th>Celular</th>
             <th>Horário de Entrada</th>
+            <th>Horário de Saída</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -155,37 +156,64 @@ th {
       
       //função para adicionar pessoas as tabelas
 //função para adicionar pessoas as tabelas
-function adicionarPessoa(nome, idmilitar, om, celular, horario) {
+function adicionarPessoa(nome, idmilitar, om, celular, horarioEntrada, horarioSaida = "", index = null) {
     const linha = tabelaCorpo.insertRow();
     const valorNome = document.createElement("td");
     const valorIdMilitar = document.createElement("td");
     const valorOm = document.createElement("td");
     const valorCelular = document.createElement("td");
-    const horarioEntrada = document.createElement('td');
-    const colunaAcoes = document.createElement('td'); // Coluna para os botões de exclusão
+    const horarioEntradaTd = document.createElement('td');
+    const horarioSaidaTd = document.createElement('td');
+    const colunaAcoes = document.createElement('td');
     
     valorNome.textContent = nome;
     valorIdMilitar.textContent = idmilitar;
     valorOm.textContent = om;
-    valorCelular.textContent = celular; // Correção: substituído ".textContent.in" por ".textContent"
-    horarioEntrada.textContent = horario;
-    
+    valorCelular.textContent = celular;
+    horarioEntradaTd.textContent = horarioEntrada;
+    horarioSaidaTd.textContent = horarioSaida;
+
+    // Botão de registrar saída
+    const botaoSaida = document.createElement('button');
+    botaoSaida.textContent = 'Registrar Saída';
+    botaoSaida.classList.add('btn-saida');
+    botaoSaida.disabled = !!horarioSaida; // Desabilita se já houver horário de saída
+    botaoSaida.addEventListener('click', () => {
+        const saida = new Date().toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        horarioSaidaTd.textContent = saida;
+        botaoSaida.disabled = true;
+        // Atualizar localStorage
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        if (index !== null && pessoas[index]) {
+            pessoas[index].horarioSaida = saida;
+            localStorage.setItem('pessoas', JSON.stringify(pessoas));
+        }
+    });
+
     // Botão de exclusão
     const botaoExcluir = document.createElement('button');
     botaoExcluir.textContent = 'Excluir';
     botaoExcluir.classList.add('btn-excluir');
     botaoExcluir.addEventListener('click', () => {
-        tabelaCorpo.removeChild(linha); // Remove a linha da tabela quando o botão de exclusão é clicado
+        tabelaCorpo.removeChild(linha);
+        // Remover do localStorage
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        if (index !== null) {
+            pessoas.splice(index, 1);
+            localStorage.setItem('pessoas', JSON.stringify(pessoas));
+        }
     });
-    
-    colunaAcoes.appendChild(botaoExcluir); // Adiciona o botão de exclusão à coluna de ações
+
+    colunaAcoes.appendChild(botaoSaida);
+    colunaAcoes.appendChild(botaoExcluir);
 
     linha.appendChild(valorNome);
     linha.appendChild(valorIdMilitar);
     linha.appendChild(valorOm);
     linha.appendChild(valorCelular);
-    linha.appendChild(horarioEntrada);
-    linha.appendChild(colunaAcoes); // Adiciona a coluna de ações (com o botão de exclusão) à linha
+    linha.appendChild(horarioEntradaTd);
+    linha.appendChild(horarioSaidaTd);
+    linha.appendChild(colunaAcoes);
 }
 
       // Função para validar se o valor contém apenas números inteiros
@@ -208,20 +236,23 @@ function adicionarPessoa(nome, idmilitar, om, celular, horario) {
         return;
           }
 
-        adicionarPessoa(nome, om, destino, ramal,horario);
-        guardarPessoa(nome,om,destino,ramal,horario);
+        // Adiciona pessoa e salva no localStorage
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        adicionarPessoa(nome, om, destino, ramal, horario, "", pessoas.length);
+        guardarPessoa(nome,om,destino,ramal,horario, "");
         form.reset();
       });
  
       //guardar os dados na localStorage
-      function guardarPessoa(nome, om, destino, ramal, horario) {
+      function guardarPessoa(nome, om, destino, ramal, horario, horarioSaida) {
         let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
         const novaPessoa = {
             nome: nome,
             om: om,
             destino: destino,
             ramal: ramal,
-            horario: horario
+            horario: horario,
+            horarioSaida: horarioSaida || ""
         };
           pessoas.push(novaPessoa);
           localStorage.setItem('pessoas', JSON.stringify(pessoas));
@@ -235,9 +266,9 @@ function adicionarPessoa(nome, idmilitar, om, celular, horario) {
       //função para puxar os elementos para a tabela
       function puxarPessoa(){
         const pessoas= JSON.parse(localStorage.getItem('pessoas'))||[]
-        pessoas.forEach(pessoa => {
-          const { nome, om,destino,ramal, horario } = pessoa;
-       adicionarPessoa(nome, om,destino,ramal, horario);
+        pessoas.forEach((pessoa, idx) => {
+          const { nome, om, destino, ramal, horario, horarioSaida } = pessoa;
+          adicionarPessoa(nome, om, destino, ramal, horario, horarioSaida, idx);
         });   
         
       }
