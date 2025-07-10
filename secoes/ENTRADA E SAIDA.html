@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENT/SAIDA PESSOAL - CDS</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+    }
+    .container-imagem {
+        position: relative;
+        width: 100%;
+        height: 180px; /* Defina a altura da imagem conforme necessário */
+        margin-bottom: 40px; /* Adicione margem na parte inferior para separar os elementos */
+    }
+
+    /* Estilos opcionais para posicionar a imagem */
+    .imagem-canto-superior-esquerdo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 120px; /* Defina a largura da imagem */
+        height: 160px; /* Mantenha a proporção da imagem */
+        margin: 30px; /* Margem opcional para afastar um pouco da borda */
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    #nome_entrada {
+        text-transform: uppercase;
+    }
+
+    #nome_saida {
+        text-transform: uppercase;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-group label {
+        flex: 0 0 150px;
+        margin-right: 10px;
+    }
+
+    input[type="text"],
+    select,
+    button {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        flex: 1;
+        box-sizing: border-box; /* Garante que a largura total do elemento inclua o preenchimento e a borda */
+    }
+
+    .verde {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 10px; /* Margem inferior adicionada */
+    }
+
+    .verde:hover {
+        background-color: #45a049;
+    }
+    /* Estilo para o botão lixeira */
+        .lixeira {
+            padding: 10px;
+            border: 1px solid #ccc; /* Borda ao redor do botão */
+            border-radius: 30%; /* Botão circular */
+            cursor: pointer;
+            font-size: 20px; /* Tamanho do ícone */
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent; /* Sem cor de fundo */
+            transition: transform 0.2s, filter 0.2s; /* Transição suave para efeito */
+            /* Centralizar o conteúdo do botão dentro da célula */
+        }
+
+        /* Efeito hover: aumenta o tamanho e aplica um filtro */
+        .lixeira:hover {
+            transform: scale(1.2); /* Aumenta o tamanho do botão */
+            filter: brightness(1.2); /* Aumenta o brilho da imagem ao passar o mouse */
+            background-color: #7b0000; /* Cor de fundo vermelho*/
+        }
+
+        .lixeira img {
+            width: 100%;
+            height: 100%;
+        }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid black;
+        margin-right: 20px;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center; /* Centralizando o texto */
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .btn-container {
+        text-align: left; /* Alinha o botão à esquerda */
+        margin-top: 20px;
+    }
+
+
+        /* Estilo da segunda tabela para alinhar os botões de lixeira */
+    .table-lixeira {
+        border-collapse: collapse;
+        width: 50px; /* Apenas para a coluna do botão de lixeira */
+    }
+
+    .table-lixeira td {
+        padding: 0;
+    }
+
+
+ /* Tabela sem borda */
+        #semBorda {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #semBorda, #semBorda th, #semBorda td {
+            border: none;
+        }
+
+ /* Esconde as células da tabela de lixeira */
+    .invisible {
+        visibility: hidden;
+    }
+   
+
+</style>
+</head>
+<body>
+
+<table id="semBorda">
+<tr>
+<td>
+<div class="container-imagem">
+    <img class="imagem-canto-superior-esquerdo" src="CDS_Escudo.png" alt="Imagem do CDS">
+</div>
+</td>
+<td>
+<h1>Controle de acesso as mediações do CDS<br/>v2.0.2</h1><h6></h6>
+</td>
+</tr>
+</table>
+
+<h2>Entrada:</h2>
+
+<div class="form-group">
+    <label for="divisao_secao_entrada">Divisão/Seção:</label>
+    <select id="divisao_secao_entrada" required>
+        <option value=""></option>
+        <option value="EMP">EMP</option>
+        <option value="D IA">D IA</option>
+        <option value="SDS-1">SDS-1</option>
+        <option value="SDS-2">SDS-2</option>
+        <option value="SDS-3">SDS-3</option>
+        <option value="SDS-4">SDS-4</option>
+        <option value="DED">DED</option>
+        <option value="DES/CH">DES/CH</option>
+        <option value="DES/SDESOP">DES/SDESOP</option>
+        <option value="DES/SGS">DES/SGS</option>
+        <option value="DES/SATS">DES/SATS</option>
+        <option value="DPCA">DPCA</option>
+        <option value="D ADM/MAT EXP">D ADM/MAT EXP</option>       
+        <option value="SAITI">SAITI</option>
+        <option value="DIV PESS">DIV PESS</option>
+        <option value="COM SOC">COM SOC</option>
+        <option value="S G CIC">S G CIC</option>
+        <option value="A AP A JUR">A AP A JUR</option>
+        <option value="COPA">COPA</option>
+        <option value="MIRANTE">MIRANTE</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="posto_graduacao_entrada">Posto/Graduação:</label>
+    <select id="posto_graduacao_entrada" required>
+        <option value=""></option>
+        <option value="GEN">GEN</option>
+        <option value="CEL">CEL</option>
+        <option value="CEL R1">CEL R1</option>
+        <option value="TC">TC</option>
+        <option value="Maj">Maj</option>
+        <option value="Cap">Cap</option>
+        <option value="Cap R1">Cap R1</option>
+        <option value="TEN">TEN</option>
+        <option value="Asp">Asp</option>
+        <option value="ST">ST</option>
+        <option value="SGT">SGT</option>
+         <option value="AL">AL</option>
+        <option value="Cb">Cb</option>
+        <option value="Sd">Sd</option>
+        <option value="Sc">S.Civil</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="nome_entrada">Nome de Guerra:</label>
+    <input type="text" id="nome_entrada" required>
+</div>
+<div class="form-group">
+    <label for="hora_entrada">Hora da Entrada:</label>
+    <input type="time" id="hora_entrada" required>
+</div>
+
+<button class="verde" onclick="adicionarLinha('entrada')">Adicionar</button>
+
+<div id="tabela-html-entrada">
+    <table id="tabela-entrada">
+        <thead>
+            <tr>
+                <th>Divisão/Seção:</th>
+                <th>Posto/Graduação:</th>
+                <th>Nome de Guerra:</th>
+                <th>Hora da Entrada:</th>
+                 <th>Ações:</th>
+            </tr>
+        </thead>
+        <tbody id="corpo-tabela-entrada">
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Segunda tabela com botões de lixeira -->
+<table id="tabela-lixeira-entrada" class="table-lixeira">
+    <tbody id="corpo-lixeira-entrada">
+    </tbody>
+</table>
+
+<!-- Esta parte inseria um botão abaixo da tabela para remover o ultimo adicioanado, porem foi criado um novo botão ao lado de cada linha a fim de excluir a linha que esteja em desacordo.-->
+
+<div class="btn-container">
+    <button class="verde" onclick="removerUltimaLinha('entrada')">Apagar</button>
+</div>
+
+<h2>Saída:</h2>
+
+<div class="form-group">
+    <label for="divisao_secao_saida">Divisão/Seção:</label>
+    <select id="divisao_secao_saida" required>
+        <option value=""></option>
+        <option value="EMP">EMP</option>
+        <option value="D IA">D IA</option>
+        <option value="SDS-1">SDS-1</option>
+        <option value="SDS-2">SDS-2</option>
+        <option value="SDS-3">SDS-3</option>
+        <option value="SDS-4">SDS-4</option>
+        <option value="DED">DED</option>
+        <option value="DES/CH">DES/CH</option>
+        <option value="DES/SDESOP">DES/SDESOP</option>
+        <option value="DES/SGS">DES/SGS</option>
+        <option value="DES/SATS">DES/SATS</option>
+        <option value="DPCA">DPCA</option>
+        <option value="D ADM/MAT EXP">D ADM/MAT EXP</option>       
+        <option value="SAITI">SAITI</option>
+        <option value="DIV PESS">DIV PESS</option>
+        <option value="COM SOC">COM SOC</option>
+        <option value="S G CIC">S G CIC</option>
+        <option value="A AP A JUR">A AP A JUR</option>
+        <option value="COPA">COPA</option>
+        <option value="MIRANTE">MIRANTE</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="posto_graduacao_saida">Posto/Graduação:</label>
+    <select id="posto_graduacao_saida" required>
+        <option value=""></option>
+        <option value="GEN">GEN</option>
+        <option value="CEL">CEL</option>
+        <option value="CEL R1">CEL R1</option>
+        <option value="TC">TC</option>
+        <option value="Maj">Maj</option>
+        <option value="Cap">Cap</option>
+        <option value="Cap R1">Cap R1</option>
+        <option value="TEN">TEN</option>
+        <option value="Asp">Asp</option>
+        <option value="ST">ST</option>
+        <option value="SGT">SGT</option>
+        <option value="Cb">Cb</option>
+        <option value="Sd">Sd</option>
+        <option value="Sc">S.Civil</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="nome_saida">Nome de Guerra:</label>
+    <input type="text" id="nome_saida" required>
+</div>
+<div class="form-group">
+    <label for="hora_saida">Hora da Saída:</label>
+    <input type="time" id="hora_saida" required>
+</div>
+
+<button class="verde" onclick="adicionarLinha('saida')">Adicionar</button>
+
+<div id="tabela-html-saida">
+    <table id="tabela-saida">
+        <thead>
+            <tr>
+                <th>Divisão/Seção:</th>
+                <th>Posto/Graduação:</th>
+                <th>Nome de Guerra:</th>
+                <th>Hora da Saída:</th>
+                <!-- <th>Ações</th> -->
+            </tr>
+        </thead>
+        <tbody id="corpo-tabela-saida">
+        </tbody>
+    </table>
+</div>
+
+<!-- Esta parte inseria um botão abaixo da tabela para remover o ultimo adicioanado, porem foi criado um novo botão ao lado de cada linha a fim de excluir a linha que esteja em desacordo.-->
+
+<div class="btn-container">
+    <button class="verde" onclick="removerUltimaLinha('saida')">Apagar</button>
+</div>
+
+<!-- Segunda tabela com botões de lixeira para saída -->
+<table id="tabela-lixeira-saida" class="table-lixeira">
+    <tbody id="corpo-lixeira-saida">
+    </tbody>
+</table>
+
+<script>
+const ordemDivisoes = [
+    "EMP", "D IA", "SDS-1", "SDS-2", "SDS-3", "SDS-4", "DED", "DES/CH", "DES/SDESOP", "DES/SGS", "DES/SATS",
+    "DPCA", "D ADM/MAT EXP", "SAITI", "DIV PESS", "COM SOC", "S G CIC", "A AP A JUR", "COPA", "MIRANTE"
+];
+
+function adicionarLinha(tipo) {
+    var divisaoSecao = document.getElementById("divisao_secao_" + tipo).value.toUpperCase();
+    var postoGraduacao = document.getElementById("posto_graduacao_" + tipo).value.toUpperCase();
+    var nome = document.getElementById("nome_" + tipo).value.toUpperCase();
+    var hora = document.getElementById("hora_" + tipo).value;
+
+    if (!divisaoSecao || !postoGraduacao || !nome || !hora) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    if (!ordemDivisoes.includes(divisaoSecao)) {
+        alert("Divisão/Seção inválida.");
+        return;
+    }
+
+    const tabela = document.getElementById("corpo-tabela-" + tipo);
+    const novaLinha = tabela.insertRow();
+
+    const celulaDivisaoSecao = novaLinha.insertCell(0);
+    const celulaPostoGraduacao = novaLinha.insertCell(1);
+    const celulaNome = novaLinha.insertCell(2);
+    const celulaHora = novaLinha.insertCell(3);
+    const celulaAcao = novaLinha.insertCell(4); // nova célula para botão
+
+    celulaDivisaoSecao.innerHTML = "<b>" + divisaoSecao + "</b>";
+    celulaPostoGraduacao.innerText = postoGraduacao;
+    celulaNome.innerText = nome;
+    celulaHora.innerText = hora;
+
+    // Botão lixeira
+    const botaoLixeira = document.createElement("button");
+    botaoLixeira.className = "lixeira";
+    botaoLixeira.innerHTML = `<img src="lixeira.ico" alt="Lixeira">`;
+    botaoLixeira.onclick = function () {
+        novaLinha.remove();
+        removerDoLocalStorage(tipo, nome, hora); // remove do storage
+    };
+    celulaAcao.appendChild(botaoLixeira);
+
+    armazenarPessoa(tipo, divisaoSecao, postoGraduacao, nome, hora);
+
+    ordenarTabela(tipo);
+}
+
+function armazenarPessoa(tipo, div, posto, nome, hora) {
+    const chave = "pessoas_" + tipo;
+    let pessoas = JSON.parse(localStorage.getItem(chave)) || [];
+
+    pessoas.push({ div, posto, nome, hora });
+    localStorage.setItem(chave, JSON.stringify(pessoas));
+}
+
+function removerDoLocalStorage(tipo, nome, hora) {
+    const chave = "pessoas_" + tipo;
+    let pessoas = JSON.parse(localStorage.getItem(chave)) || [];
+
+    // remove a pessoa com base em nome e hora
+    pessoas = pessoas.filter(p => !(p.nome === nome && p.hora === hora));
+    localStorage.setItem(chave, JSON.stringify(pessoas));
+}
+
+function removerUltimaLinha(tipo) {
+    const tabela = document.getElementById("corpo-tabela-" + tipo);
+    if (tabela.rows.length > 0) {
+        const ultima = tabela.rows[tabela.rows.length - 1];
+        const nome = ultima.cells[2].innerText;
+        const hora = ultima.cells[3].innerText;
+        ultima.remove();
+        removerDoLocalStorage(tipo, nome, hora);
+    }
+}
+
+function ordenarTabela(tipo) {
+    const tabela = document.getElementById("corpo-tabela-" + tipo);
+    const rows = Array.from(tabela.rows);
+
+    rows.sort((a, b) => {
+        const divA = a.cells[0].textContent.trim();
+        const divB = b.cells[0].textContent.trim();
+        return ordemDivisoes.indexOf(divA) - ordemDivisoes.indexOf(divB);
+    });
+
+    rows.forEach(row => tabela.appendChild(row));
+}
+window.onload = function () {
+    restaurarTabela("entrada");
+    restaurarTabela("saida");
+};
+
+function restaurarTabela(tipo) {
+    const chave = "pessoas_" + tipo;
+    const pessoas = JSON.parse(localStorage.getItem(chave)) || [];
+
+    pessoas.forEach(pessoa => {
+        const tabela = document.getElementById("corpo-tabela-" + tipo);
+        const novaLinha = tabela.insertRow();
+
+        const celulaDiv = novaLinha.insertCell(0);
+        const celulaPosto = novaLinha.insertCell(1);
+        const celulaNome = novaLinha.insertCell(2);
+        const celulaHora = novaLinha.insertCell(3);
+        const celulaAcao = novaLinha.insertCell(4);
+
+        celulaDiv.innerHTML = "<b>" + pessoa.div + "</b>";
+        celulaPosto.innerText = pessoa.posto;
+        celulaNome.innerText = pessoa.nome;
+        celulaHora.innerText = pessoa.hora;
+
+        const botaoLixeira = document.createElement("button");
+        botaoLixeira.className = "lixeira";
+        botaoLixeira.innerHTML = `<img src="lixeira.ico" alt="Lixeira">`;
+        botaoLixeira.onclick = function () {
+            novaLinha.remove();
+            removerDoLocalStorage(tipo, pessoa.nome, pessoa.hora);
+        };
+        celulaAcao.appendChild(botaoLixeira);
+    });
+
+    ordenarTabela(tipo);
+}
+</script>
+
+
+</body>
+</html>
