@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sistema de Cadastro CDS 2.0</title>
+  </head>
+  <body>
+    <style>
+    /* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+header {
+  text-align: center;
+  background-color: white;
+  color: #fff;
+}
+.logocds {
+  width: 10%;
+  padding-top: 30px;
+}
+h1 {
+  text-align: center;
+}
+.camposdigitacao {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+input[type="text"] {
+  width: calc(100% - 10px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.cadastro {
+  text-align: center;
+}
+.btCadastro {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btCadastro:hover {
+  background-color: #555;
+}
+.tabela {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+th {
+  background-color: #333;
+  color: #fff;
+}
+    </style>
+    <header >
+      <img class="logocds" src="logocds.png" />
+      <h1 class="titulo">Sistema de Cadastro de Visitantes ao CDS 2.0</h1>
+    </header>
+    <h1>Cadastro de Visitantes</h1>
+    <form id="cadastroForm">
+      <section class="camposdigitacao">
+        <div>
+          <label for="nome">NOME: </label>
+          <input type="text" id="nome" name="nomecompleto" />
+        </div>
+        <div>
+          <label for="om">OM DE ORIGEM: </label>
+          <input type="text" id="om" name="om" />
+        </div>
+        <div>
+          <label for="destino">DESTINO: </label>
+          <input type="text" id="destino" name="destino" />
+        </div>
+        <div>
+          <label for="ramal">RAMAL: </label>
+          <input type="text" id="ramal" name="ramal"  />
+        </div>
+        <div>
+          <button type="submit" class="btCadastro">cadastrar visitante</button>
+        </div>
+      </section>
+    </form>
+    <!-- Botão para gerar PDF -->
+    <div style="text-align:center; margin: 20px;">
+      <button id="gerarPDF" class="btCadastro">Gerar PDF da Tabela</button>
+    </div>
+    <section class="tabela">
+      <table id="tabela">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Identidade Militar</th>
+            <th>OM de Origem</th>
+            <th>Celular</th>
+            <th>Horário de Entrada</th>
+            <th>Horário de Saída</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody class="tabela-corpo"></tbody>
+      </table>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.7.0/jspdf.plugin.autotable.min.js"></script>
+    <script>
+      const form = document.querySelector("#cadastroForm");
+      const tabelaCorpo = document.querySelector(".tabela-corpo");
+
+      function adicionarPessoa(nome, idmilitar, om, celular, horarioEntrada, horarioSaida = "", index = null) {
+        const linha = tabelaCorpo.insertRow();
+        const valorNome = document.createElement("td");
+        const valorIdMilitar = document.createElement("td");
+        const valorOm = document.createElement("td");
+        const valorCelular = document.createElement("td");
+        const horarioEntradaTd = document.createElement('td');
+        const horarioSaidaTd = document.createElement('td');
+        const colunaAcoes = document.createElement('td');
+
+        valorNome.textContent = nome;
+        valorIdMilitar.textContent = idmilitar;
+        valorOm.textContent = om;
+        valorCelular.textContent = celular;
+        horarioEntradaTd.textContent = horarioEntrada;
+        horarioSaidaTd.textContent = horarioSaida;
+
+        // Botão de registrar saída
+        const botaoSaida = document.createElement('button');
+        botaoSaida.textContent = 'Registrar Saída';
+        botaoSaida.classList.add('btn-saida');
+        botaoSaida.disabled = !!horarioSaida;
+        botaoSaida.addEventListener('click', () => {
+          const saida = new Date().toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          horarioSaidaTd.textContent = saida;
+          botaoSaida.disabled = true;
+          let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+          if (index !== null && pessoas[index]) {
+            pessoas[index].horarioSaida = saida;
+            localStorage.setItem('pessoas', JSON.stringify(pessoas));
+          }
+        });
+
+        // Botão de editar
+        const botaoEditar = document.createElement('button');
+        botaoEditar.textContent = 'Editar';
+        botaoEditar.classList.add('btn-editar');
+        botaoEditar.addEventListener('click', () => {
+          if (botaoEditar.textContent === 'Editar') {
+            // Troca para modo edição
+            valorNome.innerHTML = `<input type='text' value='${valorNome.textContent}' />`;
+            valorIdMilitar.innerHTML = `<input type='text' value='${valorIdMilitar.textContent}' />`;
+            valorOm.innerHTML = `<input type='text' value='${valorOm.textContent}' />`;
+            valorCelular.innerHTML = `<input type='text' value='${valorCelular.textContent}' />`;
+            horarioEntradaTd.innerHTML = `<input type='text' value='${horarioEntradaTd.textContent}' />`;
+            horarioSaidaTd.innerHTML = `<input type='text' value='${horarioSaidaTd.textContent}' />`;
+            botaoEditar.textContent = 'Salvar';
+            botaoSaida.disabled = true;
+          } else {
+            // Salva edição
+            const novoNome = valorNome.querySelector('input').value;
+            const novoIdMilitar = valorIdMilitar.querySelector('input').value;
+            const novoOm = valorOm.querySelector('input').value;
+            const novoCelular = valorCelular.querySelector('input').value;
+            const novoHorarioEntrada = horarioEntradaTd.querySelector('input').value;
+            const novoHorarioSaida = horarioSaidaTd.querySelector('input').value;
+            valorNome.textContent = novoNome;
+            valorIdMilitar.textContent = novoIdMilitar;
+            valorOm.textContent = novoOm;
+            valorCelular.textContent = novoCelular;
+            horarioEntradaTd.textContent = novoHorarioEntrada;
+            horarioSaidaTd.textContent = novoHorarioSaida;
+            botaoEditar.textContent = 'Editar';
+            botaoSaida.disabled = !!novoHorarioSaida;
+            // Atualiza localStorage
+            let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+            if (index !== null && pessoas[index]) {
+              pessoas[index] = {
+                nome: novoNome,
+                om: novoIdMilitar,
+                destino: novoOm,
+                ramal: novoCelular,
+                horario: novoHorarioEntrada,
+                horarioSaida: novoHorarioSaida
+              };
+              localStorage.setItem('pessoas', JSON.stringify(pessoas));
+            }
+          }
+        });
+
+        // Botão de exclusão
+        const botaoExcluir = document.createElement('button');
+        botaoExcluir.textContent = 'Excluir';
+        botaoExcluir.classList.add('btn-excluir');
+        botaoExcluir.addEventListener('click', () => {
+          tabelaCorpo.removeChild(linha);
+          let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+          if (index !== null) {
+            pessoas.splice(index, 1);
+            localStorage.setItem('pessoas', JSON.stringify(pessoas));
+          }
+        });
+
+        colunaAcoes.appendChild(botaoSaida);
+        colunaAcoes.appendChild(botaoEditar);
+        colunaAcoes.appendChild(botaoExcluir);
+
+        linha.appendChild(valorNome);
+        linha.appendChild(valorIdMilitar);
+        linha.appendChild(valorOm);
+        linha.appendChild(valorCelular);
+        linha.appendChild(horarioEntradaTd);
+        linha.appendChild(horarioSaidaTd);
+        linha.appendChild(colunaAcoes);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nome = document.querySelector("#nome").value.toUpperCase().trim();
+        const om = document.querySelector("#om").value.trim();
+        const destino = document.querySelector("#destino").value.toUpperCase().trim();
+        const ramal = document.querySelector("#ramal").value.trim();
+        const horario = new Date().toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if (nome === '' || om  === '' || destino === '' || ramal === '') {
+          alert("Por favor, preencha todos os campos obrigatórios.");
+          return;
+        }
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        adicionarPessoa(nome, om, destino, ramal, horario, "", pessoas.length);
+        guardarPessoa(nome,om,destino,ramal,horario, "");
+        form.reset();
+      });
+
+      function guardarPessoa(nome, om, destino, ramal, horario, horarioSaida) {
+        let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        const novaPessoa = {
+          nome: nome,
+          om: om,
+          destino: destino,
+          ramal: ramal,
+          horario: horario,
+          horarioSaida: horarioSaida || ""
+        };
+        pessoas.push(novaPessoa);
+        localStorage.setItem('pessoas', JSON.stringify(pessoas));
+      }
+
+      window.addEventListener('load',()=>{
+        puxarPessoa();
+      });
+
+      function puxarPessoa(){
+        const pessoas= JSON.parse(localStorage.getItem('pessoas'))||[]
+        pessoas.forEach((pessoa, idx) => {
+          const { nome, om, destino, ramal, horario, horarioSaida } = pessoa;
+          adicionarPessoa(nome, om, destino, ramal, horario, horarioSaida, idx);
+        });   
+      }
+
+      // Função para gerar PDF da tabela
+      document.getElementById('gerarPDF').addEventListener('click', function() {
+        const jsPDF = window.jspdf.jsPDF;
+        const doc = new jsPDF();
+        // Cabeçalhos da tabela
+        const head = [[
+          'Nome',
+          'Identidade Militar',
+          'OM de Origem',
+          'Celular',
+          'Horário de Entrada',
+          'Horário de Saída'
+        ]];
+        // Dados da tabela
+        const body = [];
+        const pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
+        pessoas.forEach(pessoa => {
+          body.push([
+            pessoa.nome,
+            pessoa.om,
+            pessoa.destino,
+            pessoa.ramal,
+            pessoa.horario,
+            pessoa.horarioSaida || ''
+          ]);
+        });
+        doc.text('Relatório de Visitantes', 14, 15);
+        doc.autoTable({
+          head: head,
+          body: body,
+          startY: 20,
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [51, 51, 51] }
+        });
+        doc.save('visitantes_cds.pdf');
+      });
+    </script>
+  </body>
+</html> 
